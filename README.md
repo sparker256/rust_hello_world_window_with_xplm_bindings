@@ -2,48 +2,50 @@
 # Rust Hello World With XPLM Bindings plugin
 
 This is a trivial plugin which just prints to stdout when
-enabled or disabled.
+enabled or disabled. It also does a log entry in the Log.txt file
+when enabled or disabled proving that the bindings are working.
 
-This build has only been tested on Intel MacOS 12.6 and Ubuntu 22.04.
+This build has been tested on Intel MacOS 12.6, Ubuntu 22.04 and Windows 10.
 
-## Installing into X-Plane
+## Building on Linux
 
-The built `dylib` should be copied into the appropriate plugin
-structure within X-Plane, for example:
-```shell
-cp target/debug/libhello_plugin_rust.dylib \ 
-  <aircraft>/hello-plugin-rust/mac_x64/hello-plugin-rust.xpl
-```
+cargo clean
+cargo build --release --target=x86_64-unknown-linux-gnu
+mkdir -p target/dist/rust_hello_world/lin_x64
+cp -v "target/x86_64-unknown-linux-gnu/release/librust_hello_world.so" "target/dist/rust_hello_world/lin_x64/rust_hello_world.xpl"
 
-## Adding more bindings
+## Building on Windows
 
-You can use [xplm-sys](https://crates.io/crates/xplm-sys) (or [bindgen](https://rust-lang.github.io/rust-bindgen/) directly), to
-generate the bindings, or you can create them manually, for example:
+cargo clean
+cargo build --release --target=x86_64-pc-windows-gnu
+mkdir -p target/dist/rust_hello_world/win_x64
+cp -v "target/x86_64-pc-windows-gnu/release/rust_hello_world.dll" "target/dist/rust_hello_world/win_x64/rust_hello_world.xpl"
+
+## Building on Mac x86_64
+
+cargo clean
+cargo build --release --target=x86_64-apple-darwin
+mkdir -p target/dist/rust_hello_world/mac_x64
+cp -v "target/x86_64-apple-darwin/release/librust_hello_world.dylib" "target/dist/rust_hello_world/mac_x64/rust_hello_world.xpl"
+
+
+## Building on Mac aarch64
+
+cargo clean
+cargo build --release --target=aarch64-apple-darwin
+mkdir -p target/dist/rust_hello_world/mac_x64
+cp -v "target/aarch64-apple-darwin/release/librust_hello_world.dylib" "target/dist/rust_hello_world/mac_x64/rust_hello_world.xpl"
+
+
+## bindings
+
+I am using ([bindgen](https://rust-lang.github.io/rust-bindgen/) directly), to
+generate the bindings.
+
+These can be invoked by this example:
 
 ```rust
-type XPLMCommandRef = *mut c_void;
-
-extern "C" {
-    pub fn XPLMFindCommand(inName: *const c_char) -> XPLMCommandRef;
-}
-
-extern "C" {
-    pub fn XPLMCommandBegin(inCommand: XPLMCommandRef);
-}
-
-extern "C" {
-    pub fn XPLMCommandEnd(inCommand: XPLMCommandRef);
-}
-```
-
-Once added, these can be invoked once types are converted, for example:
-
-```rust
-    const DREF_NAME: &str = "sim/flight_controls/pitch_trim_up";
-
-    let name = CString::new(DREF_NAME).expect("");
-    let data_ref = XPLMFindCommand(name.as_ptr());
-    XPLMCommandBegin(data_ref);
-    // ...
-    XPLMCommandEnd(data_ref);
+    const BUF_NAME: &str = "Rust Hello World Enabled!\n";
+    let name = CString::new(BUF_NAME).expect("");
+    bindings::XPLMDebugString(name.as_ptr());
 ```
