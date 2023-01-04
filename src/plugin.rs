@@ -41,7 +41,6 @@ unsafe extern "C" fn XPluginDisable() {
     const BUF_NAME: &str = "Rust Hello World Disabled!\n";
     let name = CString::new(BUF_NAME).expect("");
     bindings::XPLMDebugString(name.as_ptr());
-
 }
 
 #[no_mangle]

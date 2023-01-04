@@ -9,32 +9,40 @@ This build has been tested on Intel MacOS 12.6, Ubuntu 22.04 and Windows 10.
 
 ## Building on Linux
 
-cargo clean
-cargo build --release --target=x86_64-unknown-linux-gnu
-mkdir -p target/dist/rust_hello_world/lin_x64
-cp -v "target/x86_64-unknown-linux-gnu/release/librust_hello_world.so" "target/dist/rust_hello_world/lin_x64/rust_hello_world.xpl"
+   ```
+   cargo clean
+   cargo build --release --target=x86_64-unknown-linux-gnu
+   mkdir -p target/dist/rust_hello_world/lin_x64
+   cp -v "target/x86_64-unknown-linux-gnu/release/librust_hello_world.so" "target/dist/rust_hello_world/lin_x64/rust_hello_world.xpl"
+   ```
 
 ## Building on Windows
 
-cargo clean
-cargo build --release --target=x86_64-pc-windows-gnu
-mkdir -p target/dist/rust_hello_world/win_x64
-cp -v "target/x86_64-pc-windows-gnu/release/rust_hello_world.dll" "target/dist/rust_hello_world/win_x64/rust_hello_world.xpl"
+   ```
+   cargo clean
+   cargo build --release --target=x86_64-pc-windows-gnu
+   mkdir -p target/dist/rust_hello_world/win_x64
+   cp -v "target/x86_64-pc-windows-gnu/release/rust_hello_world.dll" "target/dist/rust_hello_world/win_x64/rust_hello_world.xpl"
+   ```
 
 ## Building on Mac x86_64
 
-cargo clean
-cargo build --release --target=x86_64-apple-darwin
-mkdir -p target/dist/rust_hello_world/mac_x64
-cp -v "target/x86_64-apple-darwin/release/librust_hello_world.dylib" "target/dist/rust_hello_world/mac_x64/rust_hello_world.xpl"
+   ```
+   cargo clean
+   cargo build --release --target=x86_64-apple-darwin
+   mkdir -p target/dist/rust_hello_world/mac_x64
+   cp -v "target/x86_64-apple-darwin/release/librust_hello_world.dylib" "target/dist/rust_hello_world/mac_x64/rust_hello_world.xpl"
+   ```
 
 
 ## Building on Mac aarch64
 
-cargo clean
-cargo build --release --target=aarch64-apple-darwin
-mkdir -p target/dist/rust_hello_world/mac_x64
-cp -v "target/aarch64-apple-darwin/release/librust_hello_world.dylib" "target/dist/rust_hello_world/mac_x64/rust_hello_world.xpl"
+   ```
+   cargo clean
+   cargo build --release --target=aarch64-apple-darwin
+   mkdir -p target/dist/rust_hello_world/mac_x64
+   cp -v "target/aarch64-apple-darwin/release/librust_hello_world.dylib" "target/dist/rust_hello_world/mac_x64/rust_hello_world.xpl"
+   ```
 
 
 ## bindings
