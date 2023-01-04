@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-PROJECT="hello_plugin_rust"
+PROJECT="rust_hello_world"
 
 PLUGIN_TARGET="target/dist/${PROJECT}"
 

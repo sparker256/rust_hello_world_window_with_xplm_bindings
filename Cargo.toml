@@ -1,9 +1,17 @@
 [package]
-name = "hello-plugin-rust"
+name = "rust_hello_world"
 version = "0.1.0"
 edition = "2021"
 
 [lib]
+test = false
+path = "src/lib.rs"
 crate-type = ["cdylib"]
 
+[build-dependencies]
+bindgen = "0.63.0"
+
 [dependencies]
+enum-primitive-derive = "0.2.1"
+num-traits = "0.2.15"
+anyhow = "1.0"
