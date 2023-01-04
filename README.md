@@ -1,5 +1,5 @@
 
-# Simplest possible X-Plane plugin in Rust
+# Rust Hello World With XPLM Bindings plugin
 
 This is a trivial plugin which just prints to stdout when
 enabled or disabled.

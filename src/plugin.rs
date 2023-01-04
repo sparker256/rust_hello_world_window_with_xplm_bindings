@@ -28,13 +28,20 @@ unsafe extern "C" fn XPluginStart(
 
 #[no_mangle]
 unsafe extern "C" fn XPluginEnable() -> c_int {
-    println!("[rust-hello-world] Enabled");
+    println!("[hello-plugin-rust] Enabled");
+    const BUF_NAME: &str = "Rust Hello World Enabled!\n";
+    let name = CString::new(BUF_NAME).expect("");
+    bindings::XPLMDebugString(name.as_ptr());
     1
 }
 
 #[no_mangle]
 unsafe extern "C" fn XPluginDisable() {
-    println!("[rust-hello-world] Disabled");
+    println!("[hello-plugin-rust] Disabled");
+    const BUF_NAME: &str = "Rust Hello World Disabled!\n";
+    let name = CString::new(BUF_NAME).expect("");
+    bindings::XPLMDebugString(name.as_ptr());
+
 }
 
 #[no_mangle]
