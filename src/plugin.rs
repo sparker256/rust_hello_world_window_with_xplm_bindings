@@ -64,16 +64,16 @@ unsafe extern "C" fn XPluginStart(
     signature: *mut c_char,
     description: *mut c_char,
 ) -> c_int {
-    copy_to_c_buffer(String::from("Rust Hello World"), name);
-    copy_to_c_buffer(String::from("org.SparkerInVR.rust.hello.world"), signature);
-    copy_to_c_buffer(String::from("Rust Hello World Plugin"), description);
+    copy_to_c_buffer(String::from("Rust Hello World Window"), name);
+    copy_to_c_buffer(String::from("org.SparkerInVR.rust.hello.world.window"), signature);
+    copy_to_c_buffer(String::from("Rust Hello World WindowPlugin"), description);
 
     let mut window_params = XPLMCreateWindow_t {
         structSize: std::mem::size_of::<XPLMCreateWindow_t>() as i32,
-        left: 0,
-        top: 800,
-        right: 500,
-        bottom: 500,
+        left: 150,
+        top: 600,
+        right: 650,
+        bottom: 300,
         visible: true as i32,
 
         drawWindowFunc: Some(draw_hello_world),
@@ -87,13 +87,8 @@ unsafe extern "C" fn XPluginStart(
         layer: xplm_WindowLayerFloatingWindows as i32,
     };
     
-    // Need to find the issue with the next line as window_data.window_id is not working
-    // Need to find something to replace it with in my example
-    
-    // window_data.window_id = unsafe { XPLMCreateWindowEx(&mut window_params) };
-
-
-    
+    let _window_id: XPLMWindowID = unsafe { XPLMCreateWindowEx(&mut window_params) };
+        
 
     1
 }
@@ -101,7 +96,7 @@ unsafe extern "C" fn XPluginStart(
 #[no_mangle]
 unsafe extern "C" fn XPluginEnable() -> c_int {
     println!("[hello-plugin-rust] Enabled");
-    const BUF_NAME: &str = "Rust Hello World Enabled!\n";
+    const BUF_NAME: &str = "Rust Hello World Window Enabled!\n";
     let name = CString::new(BUF_NAME).expect("");
     XPLMDebugString(name.as_ptr());
     1
@@ -110,7 +105,7 @@ unsafe extern "C" fn XPluginEnable() -> c_int {
 #[no_mangle]
 unsafe extern "C" fn XPluginDisable() {
     println!("[hello-plugin-rust] Disabled");
-    const BUF_NAME: &str = "Rust Hello World Disabled!\n";
+    const BUF_NAME: &str = "Rust Hello World Window Disabled!\n";
     let name = CString::new(BUF_NAME).expect("");
     XPLMDebugString(name.as_ptr());
 }
@@ -158,7 +153,7 @@ unsafe extern "C" fn draw_hello_world(
         &mut b,
     );
 
-    const WINDOW_TEXT: &str = "Rust Hello World!\n";
+    const WINDOW_TEXT: &str = "Rust Hello World Window!\n";
 
     let line_c = CString::new(WINDOW_TEXT).unwrap();
     let color_white: [f32; 3] = [1.0, 1.0, 1.0];
@@ -166,8 +161,8 @@ unsafe extern "C" fn draw_hello_world(
     unsafe {
         XPLMDrawString(
             color_white.as_ptr() as *mut f32,
-            l + 10,
-            t + 20,
+            l + 175,
+            t + 1,
             line_c.as_ptr() as *mut i8,
             null_mut(),
             xplmFont_Proportional.try_into().unwrap(),
