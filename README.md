@@ -3,7 +3,8 @@
 
 This is a trivial plugin which just prints to stdout when
 enabled or disabled. It also does a log entry in the Log.txt file
-when enabled or disabled proving that the bindings are working.
+when enabled or disabled proving that the bindings are working. We now also
+ have a modern 3d window that can be popped out.
 
 This build has been tested on Intel MacOS 12.6, Ubuntu 22.04 and Windows 10.
 
