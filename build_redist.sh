@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-PROJECT="rust_hello_world"
+PROJECT="rust_hello_world_window"
 
 PLUGIN_TARGET="target/dist/${PROJECT}"
 

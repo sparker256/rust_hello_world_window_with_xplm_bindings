@@ -66,7 +66,7 @@ unsafe extern "C" fn XPluginStart(
 ) -> c_int {
     copy_to_c_buffer(String::from("Rust Hello World Window"), name);
     copy_to_c_buffer(String::from("org.SparkerInVR.rust.hello.world.window"), signature);
-    copy_to_c_buffer(String::from("Rust Hello World WindowPlugin"), description);
+    copy_to_c_buffer(String::from("Rust Hello World Window Plugin"), description);
 
     let mut window_params = XPLMCreateWindow_t {
         structSize: std::mem::size_of::<XPLMCreateWindow_t>() as i32,
@@ -76,7 +76,7 @@ unsafe extern "C" fn XPluginStart(
         bottom: 300,
         visible: true as i32,
 
-        drawWindowFunc: Some(draw_hello_world),
+        drawWindowFunc: Some(draw_hello_world_window),
         handleMouseClickFunc: Some(dummy_mouse_handler),
         handleRightClickFunc: Some(dummy_mouse_handler),
         handleMouseWheelFunc: Some(dummy_wheel_handler),
@@ -124,7 +124,7 @@ unsafe extern "C" fn XPluginReceiveMessage(
 
 
 // This now seems to match my Hello-World-SDK-4 draw_hello_world function
-unsafe extern "C" fn draw_hello_world(
+unsafe extern "C" fn draw_hello_world_window(
     hd_window_id: XPLMWindowID,
     hw_refcon: *mut ::std::os::raw::c_void,
 ) {

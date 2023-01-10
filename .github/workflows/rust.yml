@@ -23,15 +23,15 @@ jobs:
           sudo apt-get install libxcb-shape0-dev libxcb-xfixes0-dev libclang-dev
       - name: Cache
         uses: Swatinem/rust-cache@v2
-      - name: Compile RUST_HELLO_WORLD
+      - name: Compile RUST_HELLO_WORLD_WINDOW
         run: |
           cargo build --release
-          cp target/release/librust_hello_world.so lin.xpl
+          cp target/release/librust_hello_world_window.so lin.xpl
           ldd lin.xpl
-      - name: RUST_HELLO_WORLD Artifacts
+      - name: RUST_HELLO_WORLD_WINDOW Artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: rust_hello_world
+          name: rust_hello_world_window
           path: lin.xpl
           
   build-mac:
@@ -45,16 +45,16 @@ jobs:
           rustup target add aarch64-apple-darwin
       - name: Cache
         uses: Swatinem/rust-cache@v2
-      - name: Compile RUST_HELLO_WORLD
+      - name: Compile RUST_HELLO_WORLD_WINDOW
         run: |
           cargo build --release --target x86_64-apple-darwin
           cargo build --release --target aarch64-apple-darwin
-          lipo -create target/x86_64-apple-darwin/release/librust_hello_world.dylib target/aarch64-apple-darwin/release/librust_hello_world.dylib -o mac.xpl
+          lipo -create target/x86_64-apple-darwin/release/librust_hello_world_window.dylib target/aarch64-apple-darwin/release/librust_hello_world_window.dylib -o mac.xpl
           otool -L mac.xpl
-      - name: RUST_HELLO_WORLD Artifacts
+      - name: RUST_HELLO_WORLD_WINDOW Artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: rust_hello_world
+          name: rust_hello_world_window
           path: mac.xpl
           
   build-win:
@@ -74,12 +74,12 @@ jobs:
           submodules: recursive
       - name: Cache
         uses: Swatinem/rust-cache@v2
-      - name: Compile RUST_HELLO_WORLD
+      - name: Compile RUST_HELLO_WORLD_WINDOW
         run: |
           cargo build --release
-          cp target/release/rust_hello_world.dll win.xpl
-      - name: RUST_HELLO_WORLD Artifacts
+          cp target/release/rust_hello_world_window.dll win.xpl
+      - name: RUST_HELLO_WORLD_WINDOW Artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: rust_hello_world
+          name: rust_hello_world_window
           path: win.xpl                  
