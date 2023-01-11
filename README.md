@@ -1,10 +1,22 @@
 
 # Rust Hello World Window With XPLM Bindings plugin
 
-This is a trivial plugin which just prints to stdout when
-enabled or disabled. It also does a log entry in the Log.txt file
-when enabled or disabled proving that the bindings are working. We now also
- have a modern 3d window that can be popped out.
+This is my demonstration of how to convert a X-Plane C++ plugin to Rust.
+In this case I started with my https://github.com/sparker256/Hello-World-SDK-4 
+
+
+Using my first fork I was able to see messages when X-Plane was run in a terminal
+if you enabeled or disabled this plugin and did not need any bindings.
+
+
+I then started using bindings with ([bindgen](https://rust-lang.github.io/rust-bindgen/) directly),
+and could then use XPLMDebugString so the message would be put into the Log.txt and also
+if you oppened the dev console you would see the messages when the plugin was enabled or disabled.
+
+
+I next added a window and put some text on it. I did this by using XPLMCreateWindow_t, XPLMCreateWindowEx,
+XPLMSetGraphicsState, XPLMGetWindowGeometry and XPLMDrawString.
+
 
 This build has been tested on Intel MacOS 12.6, Ubuntu 22.04 and Windows 10.
 

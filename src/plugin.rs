@@ -4,7 +4,8 @@
 use crate::bindings;
 use bindings::{XPLMDrawString, XPLMFontID, XPLMSetGraphicsState, xplmFont_Proportional, XPLMDebugString,
     XPLMWindowID, XPLMCreateWindow_t, XPLMKeyFlags, xplm_WindowLayerFloatingWindows,
-    xplm_WindowDecorationRoundRectangle, XPLMCreateWindowEx, xplm_CursorDefault};
+    xplm_WindowDecorationRoundRectangle, XPLMCreateWindowEx, xplm_CursorDefault, XPLMGetScreenBoundsGlobal,
+     XPLMGetWindowGeometry};
 
 
 use enum_primitive_derive::Primitive;
@@ -70,12 +71,11 @@ unsafe extern "C" fn XPluginStart(
 
     let mut window_params = XPLMCreateWindow_t {
         structSize: std::mem::size_of::<XPLMCreateWindow_t>() as i32,
+        visible: true as i32,
         left: 150,
         top: 600,
         right: 650,
         bottom: 300,
-        visible: true as i32,
-
         drawWindowFunc: Some(draw_hello_world_window),
         handleMouseClickFunc: Some(dummy_mouse_handler),
         handleRightClickFunc: Some(dummy_mouse_handler),
@@ -86,6 +86,23 @@ unsafe extern "C" fn XPluginStart(
         decorateAsFloatingWindow: xplm_WindowDecorationRoundRectangle as i32,
         layer: xplm_WindowLayerFloatingWindows as i32,
     };
+
+    let mut left: i32 = 150;
+    let mut top: i32 = 600;
+    let mut right: i32 = 650;
+    let mut bottom: i32 = 300;
+
+    XPLMGetScreenBoundsGlobal(
+        &mut left,
+        &mut top,
+        &mut right,
+        &mut bottom,
+    );
+
+    window_params.left = left + 350;
+    window_params.bottom = bottom + 150;
+    window_params.right = window_params.left +200;
+    window_params.top = window_params.bottom + 200;
     
     let _window_id: XPLMWindowID = unsafe { XPLMCreateWindowEx(&mut window_params) };
         
@@ -145,7 +162,7 @@ unsafe extern "C" fn draw_hello_world_window(
     let mut r: i32 = 0;
     let mut b: i32 = 0;
 
-    bindings::XPLMGetWindowGeometry(
+    XPLMGetWindowGeometry(
         hd_window_id,
         &mut l,
         &mut t,
@@ -161,7 +178,7 @@ unsafe extern "C" fn draw_hello_world_window(
     unsafe {
         XPLMDrawString(
             color_white.as_ptr() as *mut f32,
-            l + 175,
+            l + 30,
             t + 1,
             line_c.as_ptr() as *mut i8,
             null_mut(),
