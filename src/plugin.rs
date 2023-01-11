@@ -5,7 +5,7 @@ use crate::bindings;
 use bindings::{XPLMDrawString, XPLMFontID, XPLMSetGraphicsState, xplmFont_Proportional, XPLMDebugString,
     XPLMWindowID, XPLMCreateWindow_t, XPLMKeyFlags, xplm_WindowLayerFloatingWindows,
     xplm_WindowDecorationRoundRectangle, XPLMCreateWindowEx, xplm_CursorDefault, XPLMGetScreenBoundsGlobal,
-     XPLMGetWindowGeometry};
+     XPLMGetWindowGeometry, XPLMSetWindowPositioningMode, XPLMSetWindowResizingLimits, XPLMSetWindowTitle};
 
 
 use enum_primitive_derive::Primitive;
@@ -14,39 +14,39 @@ use std::ffi::{c_char, c_int, c_void, CString};
 use std::ptr;
 use std::ptr::null_mut;
 
-unsafe extern "C" fn dummy_mouse_handler(in_window_id: XPLMWindowID,
-    x: ::std::os::raw::c_int,
-    y: ::std::os::raw::c_int,
-    is_down: ::std::os::raw::c_int,
-    in_refcon: *mut ::std::os::raw::c_void) -> ::std::os::raw::c_int
+unsafe extern "C" fn dummy_mouse_handler(_in_window_id: XPLMWindowID,
+    _x: ::std::os::raw::c_int,
+    _y: ::std::os::raw::c_int,
+    _is_down: ::std::os::raw::c_int,
+    _in_refcon: *mut ::std::os::raw::c_void) -> ::std::os::raw::c_int
 {
     return 0;
 }
 
-unsafe extern "C" fn dummy_wheel_handler(in_window_id: XPLMWindowID,
-    x: ::std::os::raw::c_int,
-    y: ::std::os::raw::c_int,
-    wheel: ::std::os::raw::c_int,
-    clicks: ::std::os::raw::c_int,
-    in_refcon: *mut ::std::os::raw::c_void) -> ::std::os::raw::c_int
+unsafe extern "C" fn dummy_wheel_handler(_in_window_id: XPLMWindowID,
+    _x: ::std::os::raw::c_int,
+    _y: ::std::os::raw::c_int,
+    _wheel: ::std::os::raw::c_int,
+    _clicks: ::std::os::raw::c_int,
+    _in_refcon: *mut ::std::os::raw::c_void) -> ::std::os::raw::c_int
 {
      return 0;
 }
 
-unsafe extern "C" fn dummy_key_handler( in_window_id: XPLMWindowID,
-    key: i8,
-    flags: XPLMKeyFlags,
-    virtual_key: i8,
-    in_refcon: *mut ::std::os::raw::c_void ,
-    losing_focus: ::std::os::raw::c_int )
+unsafe extern "C" fn dummy_key_handler(_in_window_id: XPLMWindowID,
+    _key: i8,
+    _flags: XPLMKeyFlags,
+    _virtual_key: i8,
+    _in_refcon: *mut ::std::os::raw::c_void ,
+    _losing_focus: ::std::os::raw::c_int)
 {
 
 }
 
-unsafe extern "C" fn dummy_cursor_status_handler(in_window_id: XPLMWindowID,
-    x: ::std::os::raw::c_int,
-    iy: ::std::os::raw::c_int,
-    in_refcon: *mut ::std::os::raw::c_void) -> i32
+unsafe extern "C" fn dummy_cursor_status_handler(_in_window_id: XPLMWindowID,
+    _x: ::std::os::raw::c_int,
+    _y: ::std::os::raw::c_int,
+    _in_refcon: *mut ::std::os::raw::c_void) -> i32
 {
     return xplm_CursorDefault.try_into().unwrap();
 }
@@ -104,8 +104,19 @@ unsafe extern "C" fn XPluginStart(
     window_params.right = window_params.left +200;
     window_params.top = window_params.bottom + 200;
     
-    let _window_id: XPLMWindowID = unsafe { XPLMCreateWindowEx(&mut window_params) };
-        
+    let window_id: XPLMWindowID = unsafe { XPLMCreateWindowEx(&mut window_params) };
+
+    XPLMSetWindowResizingLimits(window_id,
+        250,
+        200,
+        350,
+        300);
+
+
+    const BUF_NAME: &str = "Rust Hello World Window\n";
+    let name = CString::new(BUF_NAME).expect("");
+    XPLMSetWindowTitle(window_id, name.as_ptr());
+      
 
     1
 }
@@ -143,7 +154,7 @@ unsafe extern "C" fn XPluginReceiveMessage(
 // This now seems to match my Hello-World-SDK-4 draw_hello_world function
 unsafe extern "C" fn draw_hello_world_window(
     hd_window_id: XPLMWindowID,
-    hw_refcon: *mut ::std::os::raw::c_void,
+    _hw_refcon: *mut ::std::os::raw::c_void,
 ) {
     // Mandatory: We *must* set the OpenGL state before drawing
     // (we can't make any assumptions about it)
@@ -178,8 +189,8 @@ unsafe extern "C" fn draw_hello_world_window(
     unsafe {
         XPLMDrawString(
             color_white.as_ptr() as *mut f32,
-            l + 30,
-            t + 1,
+            l + 50,
+            t - 20,
             line_c.as_ptr() as *mut i8,
             null_mut(),
             xplmFont_Proportional.try_into().unwrap(),
