@@ -5,7 +5,8 @@ use crate::bindings;
 use bindings::{XPLMDrawString, XPLMFontID, XPLMSetGraphicsState, xplmFont_Proportional, XPLMDebugString,
     XPLMWindowID, XPLMCreateWindow_t, XPLMKeyFlags, xplm_WindowLayerFloatingWindows,
     xplm_WindowDecorationRoundRectangle, XPLMCreateWindowEx, xplm_CursorDefault, XPLMGetScreenBoundsGlobal,
-     XPLMGetWindowGeometry, XPLMSetWindowPositioningMode, XPLMSetWindowResizingLimits, XPLMSetWindowTitle};
+    XPLMGetWindowGeometry, XPLMSetWindowPositioningMode, XPLMSetWindowResizingLimits, XPLMSetWindowTitle,
+    xplm_WindowPositionFree};
 
 
 use enum_primitive_derive::Primitive;
@@ -14,43 +15,53 @@ use std::ffi::{c_char, c_int, c_void, CString};
 use std::ptr;
 use std::ptr::null_mut;
 
+
+#[allow(unused_variables)]
+#[no_mangle]
 unsafe extern "C" fn dummy_mouse_handler(_in_window_id: XPLMWindowID,
-    _x: ::std::os::raw::c_int,
-    _y: ::std::os::raw::c_int,
-    _is_down: ::std::os::raw::c_int,
-    _in_refcon: *mut ::std::os::raw::c_void) -> ::std::os::raw::c_int
+    x: ::std::os::raw::c_int,
+    y: ::std::os::raw::c_int,
+    is_down: ::std::os::raw::c_int,
+    in_refcon: *mut ::std::os::raw::c_void) -> ::std::os::raw::c_int
 {
     return 0;
 }
 
-unsafe extern "C" fn dummy_wheel_handler(_in_window_id: XPLMWindowID,
-    _x: ::std::os::raw::c_int,
-    _y: ::std::os::raw::c_int,
-    _wheel: ::std::os::raw::c_int,
-    _clicks: ::std::os::raw::c_int,
-    _in_refcon: *mut ::std::os::raw::c_void) -> ::std::os::raw::c_int
-{
-     return 0;
-}
 
-unsafe extern "C" fn dummy_key_handler(_in_window_id: XPLMWindowID,
-    _key: i8,
-    _flags: XPLMKeyFlags,
-    _virtual_key: i8,
-    _in_refcon: *mut ::std::os::raw::c_void ,
-    _losing_focus: ::std::os::raw::c_int)
-{
-
-}
-
+#[allow(unused_variables)]
+#[no_mangle]
 unsafe extern "C" fn dummy_cursor_status_handler(_in_window_id: XPLMWindowID,
-    _x: ::std::os::raw::c_int,
-    _y: ::std::os::raw::c_int,
-    _in_refcon: *mut ::std::os::raw::c_void) -> i32
+    x: ::std::os::raw::c_int,
+    y: ::std::os::raw::c_int,
+    in_refcon: *mut ::std::os::raw::c_void) -> i32
 {
     return xplm_CursorDefault.try_into().unwrap();
 }
 
+
+#[allow(unused_variables)]
+#[no_mangle]
+unsafe extern "C" fn dummy_wheel_handler(_in_window_id: XPLMWindowID,
+    x: ::std::os::raw::c_int,
+    y: ::std::os::raw::c_int,
+    wheel: ::std::os::raw::c_int,
+    clicks: ::std::os::raw::c_int,
+    in_refcon: *mut ::std::os::raw::c_void) -> ::std::os::raw::c_int
+{
+     return 0;
+}
+
+#[allow(unused_variables)]
+#[no_mangle]
+unsafe extern "C" fn dummy_key_handler(_in_window_id: XPLMWindowID,
+    key: i8,
+    flags: XPLMKeyFlags,
+    virtual_key: i8,
+    in_refcon: *mut ::std::os::raw::c_void ,
+    losing_focus: ::std::os::raw::c_int)
+{
+
+}
 
 
 unsafe fn copy_to_c_buffer(src: String, dest: *mut c_char) {
@@ -77,16 +88,23 @@ unsafe extern "C" fn XPluginStart(
         right: 650,
         bottom: 300,
         drawWindowFunc: Some(draw_hello_world_window),
+        // Note on "dummy" handlers:
+        // Even if we don't want to handle these events, we have to register a "do-nothing" callback for them
         handleMouseClickFunc: Some(dummy_mouse_handler),
         handleRightClickFunc: Some(dummy_mouse_handler),
         handleMouseWheelFunc: Some(dummy_wheel_handler),
         handleKeyFunc: Some(dummy_key_handler),
         handleCursorFunc: Some(dummy_cursor_status_handler),
         refcon: null_mut(),
-        decorateAsFloatingWindow: xplm_WindowDecorationRoundRectangle as i32,
         layer: xplm_WindowLayerFloatingWindows as i32,
-    };
+        // Opt-in to styling our window like an X-Plane 11 native window
+        // If you're on XPLM300, not XPLM301, swap this enum for the literal value 1.
+        decorateAsFloatingWindow: xplm_WindowDecorationRoundRectangle as i32,
+     };
 
+    // Set the window's initial bounds
+	// Note that we're not guaranteed that the main monitor's lower left is at (0, 0)...
+	// We'll need to query for the global desktop bounds!
     let mut left: i32 = 150;
     let mut top: i32 = 600;
     let mut right: i32 = 650;
@@ -106,6 +124,13 @@ unsafe extern "C" fn XPluginStart(
     
     let window_id: XPLMWindowID = unsafe { XPLMCreateWindowEx(&mut window_params) };
 
+    // Position the window as a "free" floating window, which the user can drag around
+	XPLMSetWindowPositioningMode(window_id,
+        xplm_WindowPositionFree.try_into().unwrap(),
+        -1);
+
+
+    // Limit resizing our window: maintain a minimum width/height of 100 boxels and a max width/height of 300 boxels
     XPLMSetWindowResizingLimits(window_id,
         250,
         200,
@@ -151,10 +176,12 @@ unsafe extern "C" fn XPluginReceiveMessage(
 ) {}
 
 
+#[allow(unused_variables)]
+#[no_mangle]
 // This now seems to match my Hello-World-SDK-4 draw_hello_world function
 unsafe extern "C" fn draw_hello_world_window(
     hd_window_id: XPLMWindowID,
-    _hw_refcon: *mut ::std::os::raw::c_void,
+    hw_refcon: *mut ::std::os::raw::c_void,
 ) {
     // Mandatory: We *must* set the OpenGL state before drawing
     // (we can't make any assumptions about it)

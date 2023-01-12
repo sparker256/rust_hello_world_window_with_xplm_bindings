@@ -11,11 +11,14 @@ if you enabeled or disabled this plugin and did not need any bindings.
 
 I then started using bindings with ([bindgen](https://rust-lang.github.io/rust-bindgen/) directly),
 and could then use XPLMDebugString so the message would be put into the Log.txt and also
-if you oppened the dev console you would see the messages when the plugin was enabled or disabled.
+if you opened the dev console you would see the messages when the plugin was enabled or disabled.
 
 
 I next added a window and put some text on it. I did this by using XPLMCreateWindow_t, XPLMCreateWindowEx,
 XPLMSetGraphicsState, XPLMGetWindowGeometry and XPLMDrawString.
+
+
+I have also added GitHub Actions to when I do a push it will automatcily build a new versio.
 
 
 This build has been tested on Intel MacOS 12.6, Ubuntu 22.04 and Windows 10.
