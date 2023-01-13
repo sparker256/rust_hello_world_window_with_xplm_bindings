@@ -12,7 +12,7 @@ env:
 
 jobs:
   build-lin:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
         with:
@@ -82,4 +82,46 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: rust_hello_world_window
-          path: win.xpl                  
+          path: win.xpl
+          
+  package:
+    needs:  [build-lin, build-mac, build-win]
+    runs-on: ubuntu-20.04
+    
+    steps:
+      - uses: actions/checkout@v3
+  
+      - name: Copy files
+        run: |
+          mkdir -p rust_hello_world_window/lin_x64
+          mkdir -p rust_hello_world_window/mac_x64
+          mkdir -p rust_hello_world_window/win_x64
+          
+      - uses: actions/download-artifact@v3
+        with:
+          name: rust_hello_world_window
+          path: rust_hello_world_window/lin_x64
+       
+       -name: Rename lin.xpl to FlyWithLua.xpl
+       run: |
+         mv rust_hello_world_window/lin_x64/lin.xpl rust_hello_world_window/lin_x64/rust_hello_world_window.xpl
+         
+       -name: Rename mac.xpl to FlyWithLua.xpl
+       run: |
+         mv rust_hello_world_window/lin_x64/mac.xpl rust_hello_world_window/mac_x64/rust_hello_world_window.xpl
+         
+       -name: Rename win.xpl to FlyWithLua.xpl
+       run: |
+         mv rust_hello_world_window/lin_x64/mac.xpl rust_hello_world_window/win_x64/rust_hello_world_window.xpl
+         
+       - uses: actions/upload-artifact@v3
+         with:
+           name: rust_hello_world_window
+           path: |
+             ${{github.workspace}}/rust_hello_world_window*
+           if-no-files-found: error   
+         
+                    
+          
+          
+                               
