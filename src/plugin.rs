@@ -9,8 +9,6 @@ use bindings::{XPLMDrawString, XPLMFontID, XPLMSetGraphicsState, xplmFont_Propor
     xplm_WindowPositionFree};
 
 
-use enum_primitive_derive::Primitive;
-
 use std::ffi::{c_char, c_int, c_void, CString};
 use std::ptr;
 use std::ptr::null_mut;

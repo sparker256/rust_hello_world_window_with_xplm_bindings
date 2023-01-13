@@ -12,6 +12,4 @@ crate-type = ["cdylib"]
 bindgen = "0.63.0"
 
 [dependencies]
-enum-primitive-derive = "0.2.1"
-num-traits = "0.2.15"
-anyhow = "1.0"
+

@@ -12,7 +12,7 @@ env:
 
 jobs:
   build-lin:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
         with:
@@ -26,13 +26,13 @@ jobs:
       - name: Compile RUST_HELLO_WORLD_WINDOW
         run: |
           cargo build --release
-          cp target/release/librust_hello_world_window.so lin.xpl
+          cp target/release/librust_hello_world_window.so rust_hello_world_window.xpl
           ldd lin.xpl
       - name: RUST_HELLO_WORLD_WINDOW Artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: rust_hello_world_window
-          path: lin.xpl
+          name: rust_hello_world_window/lin_x64
+          path: rust_hello_world_window.xpl
           
   build-mac:
     runs-on: macos-11
@@ -49,13 +49,13 @@ jobs:
         run: |
           cargo build --release --target x86_64-apple-darwin
           cargo build --release --target aarch64-apple-darwin
-          lipo -create target/x86_64-apple-darwin/release/librust_hello_world_window.dylib target/aarch64-apple-darwin/release/librust_hello_world_window.dylib -o mac.xpl
+          lipo -create target/x86_64-apple-darwin/release/librust_hello_world_window.dylib target/aarch64-apple-darwin/release/librust_hello_world_window.dylib -o rust_hello_world_window.xpl
           otool -L mac.xpl
       - name: RUST_HELLO_WORLD_WINDOW Artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: rust_hello_world_window
-          path: mac.xpl
+          name: rust_hello_world_window/mac_x64
+          path: rust_hello_world_window.xpl
           
   build-win:
     runs-on: windows-latest
@@ -77,9 +77,9 @@ jobs:
       - name: Compile RUST_HELLO_WORLD_WINDOW
         run: |
           cargo build --release
-          cp target/release/rust_hello_world_window.dll win.xpl
+          cp target/release/rust_hello_world_window.dll rust_hello_world_window.xpl
       - name: RUST_HELLO_WORLD_WINDOW Artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: rust_hello_world_window
-          path: win.xpl                  
+          name: rust_hello_world_window/win_x64
+          path: rust_hello_world_window.xpl                  
