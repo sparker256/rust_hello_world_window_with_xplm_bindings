@@ -85,9 +85,8 @@ jobs:
           path: win.xpl
           
   package:
-    needs:  [build-lin, build-mac, build-win]
     runs-on: ubuntu-20.04
-    
+    needs: [build-lin, build-mac, build-win]
     steps:
       - uses: actions/checkout@v3
   
