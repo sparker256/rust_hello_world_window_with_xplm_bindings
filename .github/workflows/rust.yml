@@ -31,7 +31,7 @@ jobs:
       - name: RUST_HELLO_WORLD_WINDOW Artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: rust_hello_world_window
+          name: binaries
           path: lin.xpl
           
   build-mac:
@@ -54,7 +54,7 @@ jobs:
       - name: RUST_HELLO_WORLD_WINDOW Artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: rust_hello_world_window
+          name: binaries
           path: mac.xpl
           
   build-win:
@@ -81,5 +81,45 @@ jobs:
       - name: RUST_HELLO_WORLD_WINDOW Artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: rust_hello_world_window
+          name: binaries
           path: win.xpl
+          
+  package:
+    runs-on: ubuntu-20.04
+    needs: [build-lin, build-mac, build-win]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+   
+      - name: Download repository
+        uses: actions/download-artifact@v3
+        with:
+          name: binaries
+          path: rust_hello_world_window/lin_x64
+          
+      - name: List folder
+        run: ls -R -l
+        
+      - name: Rename  rust_hello_world_window/lin_x64/lin.xpl to rust_hello_world_window/lin_x64/rust_hello_world_window.xpl
+        run: mv rust_hello_world_window/lin_x64/lin.xpl rust_hello_world_window/lin_x64/rust_hello_world_window.xpl
+        
+      - name: List folder
+        run: ls -R -l
+        
+      - name: Rename  rust_hello_world_window/lin_x64/mac.xpl to rust_hello_world_window/mac_x64/rust_hello_world_window.xpl
+        run: mv rust_hello_world_window/lin_x64/mac.xpl rust_hello_world_window/mac_x64/rust_hello_world_window.xpl
+        
+      - name: List folder
+        run: ls -R -l
+        
+      - name: Rename  rust_hello_world_window/lin_x64/win.xpl to rust_hello_world_window/win_x64/rust_hello_world_window.xpl
+        run: mv rust_hello_world_window/lin_x64/win.xpl rust_hello_world_window/win_x64/rust_hello_world_window.xpl
+        
+      - name: List folder
+        run: ls -R -l
+      - uses: actions/upload-artifact@v3
+        with:
+          name: rust_hello_world_window
+          path: |
+            ${{github.workspace}}/rust_hello_world_window*
+          if-no-files-found: error
