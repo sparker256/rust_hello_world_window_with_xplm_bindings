@@ -119,7 +119,7 @@ jobs:
         run: ls -R -l
       - uses: actions/upload-artifact@v3
         with:
-          name: rust_hello_world_window
+          name: rust_hello_world_window_v${{env.RUST_HELLO_WORLD_VERSION}}
           path: |
             ${{github.workspace}}/rust_hello_world_window*
           if-no-files-found: error
